@@ -651,17 +651,46 @@
     img.alt = alt;
     cap.textContent = caption;
     lightbox.style.display = 'flex';
+    document.body.classList.add('modal-open');
   }
 
-  window.addEventListener('click', function(e) {
+  function closeModal() {
     const lightbox = document.getElementById('lightbox');
-    if (e.target === lightbox) {
-      lightbox.style.display = 'none';
-      document.getElementById('lightbox-img').src = '';
-      document.getElementById('lightbox-caption').textContent = '';
+    lightbox.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    document.getElementById('lightbox-img').src = '';
+    document.getElementById('lightbox-caption').textContent = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxContent = document.getElementById('lightbox-img');
+
+    // Click or touch anywhere outside the image to close modal
+    ['click', 'touchend'].forEach(eventType => {
+      lightbox.addEventListener(eventType, function (e) {
+        if (!lightboxContent.contains(e.target)) {
+          closeModal();
+        }
+      }, { passive: true });
+    });
+
+    // Close on any keypress
+    document.addEventListener('keydown', function () {
+      if (lightbox.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // Optional: also close when clicking the close button
+    const closeBtn = document.getElementById('lightbox-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeModal);
+      closeBtn.addEventListener('touchend', closeModal);
     }
   });
 </script>
+
 
     
 </body>
